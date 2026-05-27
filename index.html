@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sʏᴄʜᴏ Xᴍᴅ — Device Link</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #7c3aed;
+    --accent2: #a855f7;
+    --glow: rgba(124, 58, 237, 0.35);
+    --text: #e2e0f0;
+    --muted: #6b6880;
+    --success: #22c55e;
+    --error: #ef4444;
+    --code-bg: #16161f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .card {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 0 60px rgba(124,58,237,0.1), 0 24px 48px rgba(0,0,0,0.5);
+    animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+  .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 36px; }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step.active { opacity: 1; }
+  .step-num {
+    min-width: 26px; height: 26px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--accent2);
+    margin-top: 1px;
+  }
+  .step.active .step-num { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .step-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+  .step-text strong { color: #fff; }
+  .input-wrap { position: relative; margin-bottom: 16px; }
+  .input-icon {
+    position: absolute;
+    left: 18px; top: 50%; transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+  input {
+    width: 100%;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px 16px 46px;
+    font-size: 1rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.03em;
+  }
+  input::placeholder { color: var(--muted); }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+  button#getBtn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+  }
+  button#getBtn:hover:not(:disabled) { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.45); }
+  button#getBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .loader { display: none; align-items: center; justify-content: center; gap: 10px; padding: 20px 0; color: var(--muted); font-size: 0.88rem; }
+  .loader.show { display: flex; }
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent2); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-box { display: none; margin-top: 24px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .result-box.show { display: block; }
+  .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  .result-label { font-size: 0.72rem; font-family: 'Space Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .result-label.success { color: var(--success); }
+  .result-label.error-label { color: var(--error); }
+  .timer { font-size: 0.72rem; font-family: 'Space Mono', monospace; color: var(--muted); display: none; }
+  .timer.show { display: block; }
+  .timer.warn { color: #f97316; }
+  .code-display { padding: 28px 24px; text-align: center; }
+  .pair-code { font-family: 'Space Mono', monospace; font-size: 2.4rem; font-weight: 700; color: #fff; letter-spacing: 0.15em; cursor: pointer; transition: color 0.2s; user-select: all; }
+  .pair-code:hover { color: var(--accent2); }
+  .pair-code .sep { color: var(--accent); margin: 0 4px; }
+  .copy-hint { font-size: 0.78rem; color: var(--muted); margin-top: 10px; }
+  .copied-toast { display: inline-block; background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); border-radius: 100px; padding: 4px 14px; font-size: 0.75rem; font-family: 'Space Mono', monospace; opacity: 0; transition: opacity 0.3s; margin-top: 8px; }
+  .copied-toast.show { opacity: 1; }
+  .error-msg { padding: 20px 24px; color: var(--error); font-size: 0.88rem; text-align: center; line-height: 1.5; }
+  .instructions { display: none; padding: 16px 18px; border-top: 1px solid var(--border); }
+  .instructions.show { display: block; }
+  .instructions p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+  .instructions p strong { color: var(--text); }
+  .footer { text-align: center; margin-top: 28px; font-size: 0.75rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .footer span { color: var(--accent2); }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="badge">
+    <span class="badge-dot"></span>
+    Sʏᴄʜᴏ Xᴍᴅ · Device Link
+  </div>
+  <h1>Link Your<br>WhatsApp</h1>
+  <p class="subtitle">Enter your number to get a pairing code. No QR scan needed.</p>
+
+  <div class="steps">
+    <div class="step active" id="s1">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Enter number</strong> with country code (e.g. 919876543210)</div>
+    </div>
+    <div class="step" id="s2">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Copy the code</strong> shown below</div>
+    </div>
+    <div class="step" id="s3">
+      <div class="step-num">3</div>
+      <div class="step-text">WhatsApp → <strong>Linked Devices → Link with phone number</strong> → Enter code</div>
+    </div>
+  </div>
+
+  <div class="input-wrap">
+    <span class="input-icon">📱</span>
+    <input type="tel" id="phoneInput" placeholder="919876543210" maxlength="15" inputmode="numeric"/>
+  </div>
+  <button id="getBtn" onclick="getCode()">Get Pairing Code</button>
+
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <span>Generating code...</span>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="result-header">
+      <span class="result-label" id="resultLabel">Pairing Code</span>
+      <span class="timer" id="timer"></span>
+    </div>
+    <div class="code-display" id="codeDisplay"></div>
+    <div class="instructions" id="instructions">
+      <p>Open <strong>WhatsApp</strong> → tap <strong>⋮ Menu → Linked Devices → Link a Device</strong> → tap <strong>"Link with phone number instead"</strong> → enter the code above.</p>
+    </div>
+  </div>
+
+  <div class="footer">Powered by <span>Sʏᴄʜᴏ Xᴍᴅ</span> · shamika-wa-baileys</div>
+</div>
+
+<script>
+  // ─── Vercel deploy ke baad yahan apna URL daalo ───
+  // Example: 'https://sycho-pair.vercel.app'
+  const VERCEL_URL = 'https://YOUR-PROJECT.vercel.app';
+  // ──────────────────────────────────────────────────
+
+  let timerInterval = null;
+
+  function setStep(n) {
+    [1,2,3].forEach(i => document.getElementById('s'+i).classList.toggle('active', i <= n));
+  }
+
+  async function getCode() {
+    const input = document.getElementById('phoneInput');
+    const phone = input.value.replace(/\D/g, '');
+    if (!phone || phone.length < 10 || phone.length > 15) {
+      input.style.animation = 'none';
+      input.offsetHeight;
+      input.style.animation = 'shake 0.4s ease';
+      setTimeout(() => input.style.animation = '', 400);
+      input.focus();
+      return;
+    }
+
+    const btn = document.getElementById('getBtn');
+    const loader = document.getElementById('loader');
+    const resultBox = document.getElementById('resultBox');
+
+    btn.disabled = true;
+    loader.classList.add('show');
+    resultBox.classList.remove('show');
+    clearInterval(timerInterval);
+    setStep(1);
+
+    try {
+      const res = await fetch(`${VERCEL_URL}/api/pair?phone=${encodeURIComponent(phone)}`);
+      const data = await res.json();
+      loader.classList.remove('show');
+
+      if (data.code) {
+        showCode(data.code, data.expires || 60);
+        setStep(2);
+      } else {
+        showError(data.error || 'Failed to generate code. Try again.');
+      }
+    } catch (err) {
+      loader.classList.remove('show');
+      showError('Cannot reach server. Please try again.');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function showCode(code, expires) {
+    const parts = code.split('-');
+    const resultBox = document.getElementById('resultBox');
+    const resultLabel = document.getElementById('resultLabel');
+    const codeDisplay = document.getElementById('codeDisplay');
+    const timer = document.getElementById('timer');
+    const instructions = document.getElementById('instructions');
+
+    resultLabel.textContent = 'Your Pairing Code';
+    resultLabel.className = 'result-label success';
+
+    const formatted = parts.map(p => `<span>${p}</span>`).join('<span class="sep">—</span>');
+    codeDisplay.innerHTML = `
+      <div class="pair-code" onclick="copyCode(this)" title="Tap to copy">${formatted}</div>
+      <p class="copy-hint">Tap code to copy</p>
+      <div class="copied-toast" id="copiedToast">✓ Copied!</div>
+    `;
+
+    timer.classList.add('show');
+    instructions.classList.add('show');
+    resultBox.classList.add('show');
+
+    let secs = expires;
+    function tick() {
+      timer.textContent = `Expires in ${secs}s`;
+      timer.classList.toggle('warn', secs <= 15);
+      if (secs <= 0) {
+        clearInterval(timerInterval);
+        timer.textContent = 'Code expired — get a new one';
+        timer.className = 'timer show error-label';
+      }
+      secs--;
+    }
+    tick();
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  function showError(msg) {
+    const resultBox = document.getElementById('resultBox');
+    document.getElementById('resultLabel').textContent = 'Error';
+    document.getElementById('resultLabel').className = 'result-label error-label';
+    document.getElementById('timer').classList.remove('show');
+    document.getElementById('instructions').classList.remove('show');
+    document.getElementById('codeDisplay').innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
+    resultBox.classList.add('show');
+  }
+
+  function copyCode(el) {
+    const text = el.innerText.replace(/[—\s]/g, '');
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('copiedToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+      setStep(3);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('phoneInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') getCode();
+    });
+  });
+</script>
+</body>
+</html>
